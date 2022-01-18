@@ -1,9 +1,9 @@
-# cypress-api-testing
-API tests, using Cypress for Swagger Petstore Sample
+# Automation-testing-testing
+Using Cypress for automation testing
 
 # How to run the tests
 ## Prerequisites
-You need to run the Swagger Petstore Sample locally. Follow the instructions of this [README.md](https://github.com/swagger-api/swagger-petstore) file.
+You need to install and run the cypress
 
 ## Running the tests
 1. Clone the repository
