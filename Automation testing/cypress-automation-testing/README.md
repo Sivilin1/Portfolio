@@ -1,4 +1,4 @@
-# Automation-testing-testing
+# Automation-testing
 Using Cypress for automation testing
 
 # How to run the tests
