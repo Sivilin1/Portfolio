@@ -1,7 +1,7 @@
-# Здравствуйте.
-Здесь представлены выполненные мной примеры тестирования для оценки моего опыта и навыков.
+# Hello.
+Here are the tests I've taken to assess my experience and skills.
 
-Автоматическое тестирования выполнено с помощью Cypress и требует установки данной системы на ваш компьютер.
+The automatic verification is performed by Cypress and requires the installation of this system on your computer.
 
 
-Все тесты выполнены мной в демонстрационных целях и не имеют коммерческой подосновы.
+All tests are performed by me for demonstration purposes and have no commercial background.
