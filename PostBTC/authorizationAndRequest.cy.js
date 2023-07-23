@@ -1,5 +1,4 @@
 
-
 describe('Post BTC', () => {
 
   const email = 'sivilin.com@gmail.com'
@@ -11,8 +10,8 @@ describe('Post BTC', () => {
     it('Page SignIn', () => {
       cy.viewport(1280, 720)
       cy.visit('https://www.getblock.io/')
-      cy.get('.account-button').click()
-      cy.get('[data-testid="signInEmailButton"]').click()
+      cy.get('.account-button').should('by.visible').click()
+      cy.get('[data-testid="signInEmailButton"]').should('by.visible').click()
       
     // User data
       cy.get('[type="email"]').type(email)
@@ -20,8 +19,8 @@ describe('Post BTC', () => {
       cy.contains('Continue').click()
     })
 
-    it('Request and check response status and data', () => {
     //Body data
+    it('Request and check response status and data', () => {
       const requestBody = {
         "jsonrpc": "2.0",
         "id": "healthcheck",
@@ -38,8 +37,9 @@ describe('Post BTC', () => {
         },
         body: requestBody,
       })
-      .then((response) => {
+
     // Getting an response
+      .then((response) => {
         expect(response.status).to.eq(200)
         expect(response.body).to.have.property('result')
         expect(response.body.result.blocks).to.not.eq(0);
@@ -51,6 +51,7 @@ describe('Post BTC', () => {
         
         cy.log(response.body)
       })
+      
   })
 })
 
