@@ -1,1 +1,16 @@
+name: Run Cypress Every Hour
 
+on:
+  schedule:
+    - cron: "0 * * * *"
+
+jobs:
+  run-cypress:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install Cypress and other dependencies
+        run: npm install cypress
+      - name: Run Cypress tests
+        run: npx cypress run
