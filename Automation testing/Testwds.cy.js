@@ -2,8 +2,8 @@
 import { faker } from '@faker-js/faker';
 require('cypress-xpath');
 const randomText = faker.random.alphaNumeric(20);
-describe('Players page ', () => {
-    it('POSITION HEIGHT', () => {
+describe('QA TEst ', () => {
+    it('Main page', () => {
       cy.viewport(1366, 768)
       cy.visit('https://qa-tes.wdscode.guru/');
       cy.xpath(`//header[@id='header']//img[@alt='Test Task']`).click()
