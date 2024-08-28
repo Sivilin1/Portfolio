@@ -1,0 +1,69 @@
+describe('Search on Cleo', () => {
+  const searchText = 'From TrueCommerce to Cleo';
+  const newSearchText = 'Top EDI Providers in 2024';
+
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    if (err.message.includes('dataLayer is not defined')) {
+      return false; 
+    }
+
+    if (err.message.includes('500')) {
+      return false;
+    }
+    
+    return true;
+  });
+
+  it('should type text into the search field, clear it, type new text, and handle 500 error', () => {
+    cy.log('Устанавливаем разрешение экрана 430x932 (Mobile version iPhone 14 Pro Max)');
+    cy.viewport(430, 932);
+    cy.wait(5000);
+
+    cy.log('Открытие сайта');
+    cy.visit('https://cleo.com');
+    cy.wait(5000);
+
+   // cy.log('Интерсептируем запросы для отлова ошибки 500');
+    cy.intercept('POST', '/search*').as('searchRequest');
+    
+
+    cy.log('Открываем меню и выбираем поле поиска на главной странице');
+    cy.get('.cleo-flex-2-burger').click();
+    cy.wait(5000);
+    
+    cy.log(`Вписываем текст: "${searchText}" в поле поиска и нажимаем Enter проверяем что поле открылось и видимое`);
+    cy.get('label > .flex')
+      .should('exist')
+      .should('be.visible')
+      .type(`${searchText}{enter}`);
+    cy.wait(5000);
+
+    cy.log('Проверяем, что текст был выведен правильно на странице результатов поиска');
+    cy.get('input[data-drupal-selector="edit-query"]')
+      .should('have.value', searchText);
+    cy.wait(5000);
+
+    cy.log('Очищаем поле поиска');
+    cy.get('input[data-drupal-selector="edit-query"]')
+      .clear();
+      cy.get('body').type('{uparrow}');
+
+    cy.log(`Вводим новый текст: "Top EDI Providers in 2024" и нажимаем Enter`);
+    cy.get('input[data-drupal-selector="edit-query"]')
+      .type(`${newSearchText}{enter}`);
+    cy.wait(5000);
+
+    cy.log('Ожидаем запрос и проверяем наличие ошибки 500');
+    cy.wait('@searchRequest').then((interception) => {
+      expect(interception.response.statusCode).to.equal(500);
+      cy.log('Произошла ошибка 500, как ожидалось');
+    });
+
+    cy.on('fail', (error) => {
+      if (error.message.includes('500')) {
+        cy.log('500 Service Unavailable');
+      }
+      throw error;
+    });
+  });
+});
