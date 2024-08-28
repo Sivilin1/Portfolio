@@ -1,0 +1,68 @@
+describe('Search on Cleo', () => {
+  const searchText = 'From TrueCommerce to Cleo';
+  const newSearchText = 'Top EDI Providers in 2024';
+
+  // Игнорируем специфичные исключения
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    if (err.message.includes('dataLayer is not defined')) {
+      console.log('Игнорируем ошибку dataLayer is not defined');
+      return false; 
+    }
+
+    if (err.message.includes('500')) {
+      console.log('Игнорируем ошибку 500 для вывода в консоль');
+      return false;
+    }
+
+    return true;
+  });
+
+  it('should type text into the search box, clear it, type new text, and handle 500 error', () => {
+    console.log('Установлено разрешение экрана: 1280x720');
+    cy.viewport(1280, 720);
+    cy.wait
+
+
+
+    cy.log('Открыт сайт');
+    cy.visit('https://cleo.com');
+    cy.wait(3000);
+
+    cy.log('Интерсепт запросов установлен для отлова ошибки 500');
+    cy.intercept('POST', '/search*').as('searchRequest');
+    
+
+    cy.log(`ввод текста для поиска ${searchText} и нажата клавиша Enter`);
+    cy.get('form > .flex')
+      .should('exist')
+      .should('be.visible')
+      .type(`${searchText}{enter}`);   
+    cy.wait(5000);
+
+    cy.log('Текст на странице результатов поиска введен правильно');
+    cy.get('input[data-drupal-selector="edit-query"]')
+      .should('have.value', searchText);
+    cy.wait(3000);
+
+    cy.log(`Поле поиска очищено и введен новый текст: ${newSearchText}`);
+    cy.get('input[data-drupal-selector="edit-query"]')
+      .clear()
+      .type(`${newSearchText}{enter}`);
+    cy.wait(3000);
+
+    // Ожидаем и перехватываем запрос, проверяем наличие ошибки 500
+    cy.wait('@searchRequest').then((interception) => {
+      expect(interception.response.statusCode).to.equal(500);
+      cy.log('Произошла ошибка 500, как ожидалось');
+    });
+
+    // Обрабатываем ошибку 500 и выводим сообщение в консоль
+    cy.on('fail', (error) => {
+      if (error.message.includes('500')) {
+        cy.log('500 Service Unavailable');
+        console.log('Ошибка 500: Service Unavailable');
+      }
+      throw error;
+    });
+  });
+});
